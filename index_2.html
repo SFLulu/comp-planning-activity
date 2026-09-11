@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compensation Planning Activity</title>
+<style>
+/* ============================================================
+   COMPENSATION PLANNING ACTIVITY
+   Self-contained. No dependencies. Drop into GitHub Pages.
+   Embed in Genially at 1160 x 640 (or anything down to ~900 wide).
+   Everything scales to the iframe; nothing is ever clipped.
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  /* The whole UI scales off this. Narrow iframe = smaller everything. */
+  font-size: clamp(11px, 1.12vw, 15px);
+  height: 100%;
+}
+body {
+  margin: 0; height: 100%; overflow: hidden;   /* never scrolls as a page */
+  font-family: "Segoe UI", Inter, system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  color: #2F373B;
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root{
+  --green:#2E6B45;
+  --green-deep:#28603E;
+  --green-soft:#EAF2ED;
+  --ink:#2F373B;
+  --muted:#6E777B;
+  --line:#E3E8E5;
+  --tile:#F6F9F7;
+  --amber:#B4761B;
+  --amber-soft:#FBF1E1;
+  --slate:#4A6070;
+  --slate-soft:#ECF1F4;
+  --danger:#B03A2E;
+}
+
+.app{ height:100%; display:flex; flex-direction:column; padding:1.3rem 1.6rem 1.1rem; gap:.85rem; }
+
+/* ---------- top bar: title + budget meters ---------- */
+.topbar{ display:flex; align-items:flex-end; justify-content:space-between; gap:1.5rem; flex:0 0 auto; }
+h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:800; letter-spacing:-.01em; }
+.intro{ font-size:.95rem; color:var(--muted); margin:.35rem 0 0; max-width:34rem; line-height:1.45; }
+
+.meters{ display:flex; gap:.8rem; flex:0 0 auto; }
+.meter{ background:var(--tile); border:1px solid var(--line); border-radius:.6rem; padding:.55rem .85rem .65rem; min-width:11.5rem; }
+.meter .lab{ font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--green); font-weight:700; }
+.meter .num{ font-size:1.75rem; font-weight:800; line-height:1.1; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+.meter .num.over{ color:var(--danger); }
+.meter .track{ height:.3rem; background:#DCE4DF; border-radius:99px; overflow:hidden; margin-top:.35rem; }
+.meter .fill{ height:100%; background:var(--green); border-radius:99px; transition:width .18s ease; }
+.meter .fill.over{ background:var(--danger); }
+.meter .sub{ font-size:.68rem; color:var(--muted); margin-top:.3rem; }
+
+/* ---------- legend ---------- */
+.legend{
+  flex:0 0 auto; display:flex; align-items:center; gap:1.4rem; flex-wrap:wrap;
+  background:var(--green-soft); border-radius:.5rem; padding:.5rem .85rem; font-size:.78rem;
+}
+.legend .ttl{ font-weight:700; color:var(--green); letter-spacing:.03em; }
+.legend .item{ display:flex; align-items:center; gap:.4rem; color:#43504B; }
+.legend[hidden], .roster[hidden]{ display:none; }
+
+/* three-segment pay-position bar */
+.rb{ display:inline-flex; gap:2px; vertical-align:middle; }
+.rb i{ display:block; width:.85rem; height:.5rem; background:#D3DCD6; border-radius:1px; }
+.rb i.on{ background:var(--green); }
+
+/* ---------- roster (the only scrollable region) ---------- */
+.roster{ flex:1 1 auto; min-height:0; overflow-y:auto; border:1px solid var(--line); border-radius:.6rem; }
+.roster::-webkit-scrollbar{ width:9px; }
+.roster::-webkit-scrollbar-thumb{ background:#CBD5CE; border-radius:99px; }
+
+.colhead{
+  display:grid; grid-template-columns:13rem 11rem 1fr 1fr 8.5rem;
+  gap:1rem; padding:.5rem 1rem; font-size:.7rem; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--muted); font-weight:700;
+  border-bottom:1px solid var(--line); background:#FAFCFB;
+  position:sticky; top:0; z-index:2;
+}
+.row{ border-bottom:1px solid var(--line); }
+.row:last-child{ border-bottom:0; }
+.rowmain{
+  display:grid; grid-template-columns:13rem 11rem 1fr 1fr 8.5rem;
+  gap:1rem; padding:.7rem 1rem; align-items:center;
+}
+.nm{ font-size:1.05rem; font-weight:700; line-height:1.2; }
+.rl{ font-size:.76rem; color:var(--muted); margin-top:.1rem; }
+.pill{ display:inline-block; font-size:.7rem; font-weight:700; padding:.16rem .5rem; border-radius:99px; margin-top:.3rem; }
+.p-exc{ background:var(--green-soft); color:var(--green); }
+.p-suc{ background:var(--slate-soft); color:var(--slate); }
+.p-imp{ background:var(--amber-soft); color:var(--amber); }
+
+.base{ font-size:1.05rem; font-weight:700; font-variant-numeric:tabular-nums; }
+.pos{ display:flex; align-items:center; gap:.4rem; margin-top:.25rem; font-size:.76rem; color:var(--muted); }
+.note{ font-size:.72rem; color:var(--muted); font-style:italic; margin-top:.25rem; line-height:1.3; }
+
+.stepper{ display:flex; align-items:center; gap:.4rem; }
+.stepper button{
+  width:1.85rem; height:1.85rem; border-radius:.35rem; border:1px solid #C8D3CC;
+  background:#fff; color:var(--green-deep); font-size:1rem; font-weight:700; cursor:pointer;
+  line-height:1; display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+}
+.stepper button:hover:not(:disabled){ background:var(--green-soft); border-color:var(--green); }
+.stepper button:disabled{ opacity:.35; cursor:not-allowed; }
+.stepper button:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
+.amt{ font-size:1.1rem; font-weight:800; min-width:4.4rem; text-align:center; font-variant-numeric:tabular-nums; }
+.guide{ font-size:.7rem; color:var(--muted); margin-top:.25rem; }
+
+.reveal{
+  border:1px solid var(--green); background:#fff; color:var(--green-deep);
+  font-size:.76rem; font-weight:700; padding:.45rem .7rem; border-radius:.35rem;
+  cursor:pointer; width:100%; font-family:inherit;
+}
+.reveal:hover{ background:var(--green-soft); }
+.reveal:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
+.reveal[aria-expanded="true"]{ background:var(--green); color:#fff; }
+.reveal:disabled{ border-color:#D6DED9; color:#9AA4A7; background:#F7F9F8; cursor:not-allowed; }
+
+.nozero{
+  display:block; width:100%; margin-top:.3rem; background:none; border:0;
+  font-family:inherit; font-size:.68rem; color:var(--muted); cursor:pointer;
+  text-decoration:underline; padding:0;
+}
+.nozero:hover{ color:var(--green); }
+.chip{
+  display:block; margin-top:.3rem; font-size:.68rem; font-weight:700; text-align:center;
+  padding:.16rem .4rem; border-radius:99px;
+}
+.chip.match{ background:var(--green-soft); color:var(--green); }
+.chip.diff{ background:var(--amber-soft); color:var(--amber); }
+.nozero[hidden], .chip[hidden]{ display:none; }
+
+.banner{
+  flex:0 0 auto; display:none; align-items:center; gap:.9rem; flex-wrap:wrap;
+  background:var(--green); color:#fff; border-radius:.5rem; padding:.5rem .85rem; font-size:.8rem;
+}
+.banner.on{ display:flex; }
+.banner b{ font-variant-numeric:tabular-nums; }
+.banner .sep{ opacity:.45; }
+
+.progress{ font-size:.82rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+
+/* ---------- debrief view ---------- */
+.debrief{ flex:1 1 auto; min-height:0; overflow-y:auto; padding:.4rem .2rem; }
+.debrief[hidden]{ display:none; }
+.debrief h2{ font-size:1.75rem; color:var(--green); margin:0 0 .6rem; font-weight:800; letter-spacing:-.01em; }
+.debrief p{ font-size:.95rem; line-height:1.6; margin:0 0 .7rem; max-width:44rem; }
+.debrief .kicker{
+  font-size:1.05rem; line-height:1.5; font-weight:700; color:var(--green);
+  border-left:3px solid var(--green); padding-left:.8rem; margin:.9rem 0 1rem; max-width:44rem;
+}
+.proof{ display:flex; gap:.8rem; flex-wrap:wrap; margin-bottom:1rem; }
+.proof .card{
+  flex:1 1 15rem; background:var(--tile); border:1px solid var(--line);
+  border-radius:.6rem; padding:.7rem .9rem;
+}
+.proof .who{ font-size:1rem; font-weight:700; }
+.proof .meta{ font-size:.75rem; color:var(--muted); margin:.15rem 0 .5rem; }
+.proof .kv{ display:flex; justify-content:space-between; font-size:.8rem; padding:.2rem 0; border-top:1px solid var(--line); }
+.proof .kv b{ font-variant-numeric:tabular-nums; }
+.proof .kv.hi{ background:var(--green-soft); margin:0 -.9rem; padding:.3rem .9rem; }
+.proof .kv.hi b{ color:var(--green); font-size:.95rem; }
+.intro[hidden]{ display:none; }
+.yours{
+  background:var(--green-soft); border-radius:.5rem; padding:.7rem .9rem;
+  font-size:.88rem; line-height:1.55; max-width:44rem; margin-bottom:.9rem;
+}
+.yours b{ color:var(--green); }
+.finish{
+  display:flex; align-items:center; gap:.5rem; font-size:.9rem; font-weight:700;
+  color:var(--green); background:#fff; border:1px dashed var(--green);
+  border-radius:.5rem; padding:.6rem .9rem; max-width:44rem;
+}
+.progress.ready{ color:var(--green); font-weight:700; }
+
+.detail{ display:none; padding:0 1rem 1rem; background:#FAFCFB; }
+.detail.open{ display:block; }
+.detail .recline{
+  display:flex; gap:1.6rem; flex-wrap:wrap; align-items:baseline;
+  border-top:2px solid var(--green); padding-top:.6rem; margin-bottom:.55rem;
+}
+.detail .recline span{ font-size:.85rem; }
+.detail .recline b{ font-size:1rem; color:var(--green); font-variant-numeric:tabular-nums; }
+.detail .delta{ font-size:.75rem; color:var(--muted); }
+.detail p{ margin:0 0 .5rem; font-size:.85rem; line-height:1.55; max-width:62rem; }
+.detail p strong{ color:var(--green); }
+
+/* ---------- footer ---------- */
+.footer{ flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.footer .tot{ font-size:.82rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+.footer .acts{ display:flex; gap:.6rem; }
+.btn{
+  font-family:inherit; font-size:.8rem; font-weight:700; padding:.5rem 1rem;
+  border-radius:.35rem; cursor:pointer; border:1px solid #C8D3CC; background:#fff; color:var(--ink);
+}
+.btn:hover{ background:#F2F6F3; }
+.btn.primary{ background:var(--green); border-color:var(--green); color:#fff; }
+.btn.primary:hover{ background:var(--green-deep); }
+.btn:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
+
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+
+/* narrow iframes: let the two money columns stack under the person */
+@media (max-width: 900px){
+  .colhead{ display:none; }
+  .rowmain{ grid-template-columns:1fr 1fr; gap:.7rem; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div>
+      <h1>Allocate your budget</h1>
+      <p class="intro">Use &minus;&#36;500 / +&#36;500 to allocate merit and bonus. Each person has a suggested range &mdash; treat it as a <strong>guideline, not a hard cap</strong>. You don't need to spend everything.</p>
+    </div>
+    <div class="meters">
+      <div class="meter">
+        <div class="lab">Merit remaining</div>
+        <div class="num" id="meritNum" aria-live="polite">$13,500</div>
+        <div class="track"><div class="fill" id="meritFill" style="width:0%"></div></div>
+        <div class="sub">of $13,500 &middot; $500 increments</div>
+      </div>
+      <div class="meter">
+        <div class="lab">Bonus remaining</div>
+        <div class="num" id="bonusNum" aria-live="polite">$32,000</div>
+        <div class="track"><div class="fill" id="bonusFill" style="width:0%"></div></div>
+        <div class="sub">of $32,000 &middot; $500 increments</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span class="ttl">Pay relative to range</span>
+    <span class="item"><span class="rb"><i class="on"></i><i></i><i></i></span> Low &mdash; below midpoint</span>
+    <span class="item"><span class="rb"><i></i><i class="on"></i><i></i></span> Competitive &mdash; at midpoint</span>
+    <span class="item"><span class="rb"><i></i><i></i><i class="on"></i></span> High &mdash; above midpoint</span>
+  </div>
+
+  <div class="banner" id="banner">
+    <span>&#10003; Allocations locked.</span>
+    <span class="sep">|</span>
+    <span>You allocated <b id="bYou"></b></span>
+    <span class="sep">|</span>
+    <span>Recommended <b id="bRec"></b></span>
+    <span class="sep">|</span>
+    <span id="bMsg"></span>
+  </div>
+
+  <div class="roster">
+    <div class="colhead">
+      <div>Employee</div><div>Base pay</div><div>Merit</div><div>Bonus</div><div></div>
+    </div>
+    <div id="rows"></div>
+  </div>
+
+  <section class="debrief" id="debrief" hidden>
+    <h2>The two-variable habit</h2>
+    <p>Most managers allocate on performance alone. That quietly widens pay gaps within the same role, year after year, without anyone deciding it should happen.</p>
+    <p>A strong performer already high in range needs less than an equally strong performer sitting low in range.</p>
+    <p class="kicker">Rating tells you what someone earned. Pay position tells you where the money should go.</p>
+
+    <div class="proof" id="proof"></div>
+    <div class="yours" id="yours"></div>
+
+    <div class="finish">&#10003; <span>You&rsquo;ve completed the activity &mdash; use <b>Next</b> to continue.</span></div>
+  </section>
+
+  <footer class="footer">
+    <div>
+      <div class="tot" id="totals">Allocated: $0 merit &middot; $0 bonus</div>
+      <div class="progress" id="progress">Decided: 0 of 5 &mdash; allocate for everyone to unlock the recommendations</div>
+    </div>
+    <div class="acts">
+      <button class="btn" id="resetBtn" type="button">Start over</button>
+      <button class="btn primary" id="lockBtn" type="button" disabled>Lock in &amp; compare</button>
+      <button class="btn" id="allBtn" type="button" hidden>Show all recommendations</button>
+      <button class="btn primary" id="takeBtn" type="button" hidden>See the takeaway &rarr;</button>
+      <button class="btn" id="backBtn" type="button" hidden>&larr; Back to my allocations</button>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   EDIT HERE — everything below the array is generic.
+   TODO: base pay for Emilio / Ananya / Jace / Miles are PLACEHOLDERS.
+   TODO: confirm which Senior Analyst is paid low — swap the two
+         `pos` / merit / bonus blocks if Jace is the low-paid one.
+   ============================================================ */
+const MERIT_BUDGET = 13500;
+const BONUS_BUDGET = 32000;
+const STEP = 500;
+
+/* The matched pair the debrief argues from: same role, same rating, different pay
+   position. If you swap which Senior Analyst is paid low, swap these two ids too. */
+const PEER_PAIR = { lowId:'ananya', compId:'jace' };
+
+const EMPLOYEES = [
+  {
+    id:'ines', name:'Ines', role:'Business Analyst',
+    rating:'Exceptional', ratingClass:'p-exc',
+    base:70000, pos:'competitive',
+    note:'Filled in for a colleague on leave',
+    merit:{ min:2000, max:4000, rec:4000 },
+    bonus:{ min:4000, max:5500, rec:6500 },
+    meritWhy:'Ines is the stronger of your two Business Analysts and sits competitively in range. Awarding the top of her merit guideline recognizes the performance without pushing her past the range for the role.',
+    bonusWhy:'She earned an Exceptional rating and absorbed a colleague’s workload during their leave — contribution well beyond her own role. With budget available, exceeding the bonus guideline is defensible. Use <strong>bonus rather than merit</strong> so the reward matches the effort: one-time work, one-time payment.'
+  },
+  {
+    id:'emilio', name:'Emilio', role:'Business Analyst',
+    rating:'Needs Improvement', ratingClass:'p-imp',
+    base:78000, pos:'high',
+    note:'New to the role this year',
+    merit:{ min:0, max:1000, rec:0 },
+    bonus:{ min:0, max:2500, rec:2500 },
+    meritWhy:'Emilio is paid high in range — close to Senior Analyst territory — while performing below expectation. No merit increase this cycle: adding to base pay would deepen a gap that is already working against him.',
+    bonusWhy:'He is new to the role, and the rating reflects a learning curve more than a performance problem. The top of a reduced bonus guideline supports him through ramp-up <strong>without touching base pay</strong>, which is where the real issue sits.'
+  },
+  {
+    id:'ananya', name:'Ananya', role:'Senior Business Analyst',
+    rating:'Successful', ratingClass:'p-suc',
+    base:88000, pos:'low',
+    note:'',
+    merit:{ min:1000, max:3000, rec:4000 },
+    bonus:{ min:3500, max:5500, rec:5500 },
+    meritWhy:'Both Senior Analysts earned a Successful rating, but Ananya is paid low in range for the same work. Going above the merit guideline is the fastest way to close that gap, and <strong>merit is the right lever</strong> because the correction needs to be permanent.',
+    bonusWhy:'Performance was solid and consistent, which supports the top of the bonus guideline. Note that bonus does nothing to fix the range problem — that is why the merit award is doing the heavy lifting here.'
+  },
+  {
+    id:'jace', name:'Jace', role:'Senior Business Analyst',
+    rating:'Successful', ratingClass:'p-suc',
+    base:96000, pos:'competitive',
+    note:'',
+    merit:{ min:1500, max:3000, rec:2000 },
+    bonus:{ min:4000, max:5500, rec:5500 },
+    meritWhy:'Same rating as Ananya, but Jace is already paid competitively. A mid-guideline merit award keeps the two peers aligned rather than reopening the gap you just spent budget closing.',
+    bonusWhy:'<strong>Equal performance should earn an equal bonus</strong>, so both Senior Analysts land at $5,500. The difference between them shows up in merit, where range position matters — not in bonus, where performance does.'
+  },
+  {
+    id:'miles', name:'Miles', role:'Business Manager',
+    rating:'Needs Improvement', ratingClass:'p-imp',
+    base:115000, pos:'competitive',
+    note:'',
+    merit:{ min:0, max:2000, rec:1000 },
+    bonus:{ min:0, max:6500, rec:6500 },
+    meritWhy:'Miles is paid competitively, so there is no range gap to correct, and the rating does not support a full award. A small increase acknowledges the year without signaling that performance landed where it needed to.',
+    bonusWhy:'His guideline already tops out at <strong>half of his target bonus</strong> because of the rating — the reduction itself carries the performance message. Awarding the top of that reduced range keeps him engaged through a turnaround year.'
+  }
+];
+
+/* ---------- generic from here ---------- */
+const state = {};
+EMPLOYEES.forEach(e => state[e.id] = { merit:0, bonus:0, decided:false });
+let locked = false;
+
+const money = n => '$' + n.toLocaleString('en-US');
+const POS_INDEX = { low:0, competitive:1, high:2 };
+
+function rangeBar(pos){
+  const i = POS_INDEX[pos];
+  return '<span class="rb" role="img" aria-label="Pay position: ' + pos + '">'
+    + [0,1,2].map(n => '<i class="' + (n===i ? 'on' : '') + '"></i>').join('')
+    + '</span>';
+}
+
+function stepper(id, kind, g){
+  return '<div>'
+    + '<div class="stepper">'
+    +   '<button type="button" data-act="dec" data-id="'+id+'" data-kind="'+kind+'" aria-label="Decrease '+kind+' for '+id+'">&minus;</button>'
+    +   '<span class="amt" id="amt-'+id+'-'+kind+'">$0</span>'
+    +   '<button type="button" data-act="inc" data-id="'+id+'" data-kind="'+kind+'" aria-label="Increase '+kind+' for '+id+'">+</button>'
+    + '</div>'
+    + '<div class="guide">Guideline ' + money(g.min) + '–' + money(g.max) + '</div>'
+    + '</div>';
+}
+
+function render(){
+  document.getElementById('rows').innerHTML = EMPLOYEES.map(e =>
+    '<div class="row">'
+    + '<div class="rowmain">'
+    +   '<div>'
+    +     '<div class="nm">'+e.name+'</div>'
+    +     '<div class="rl">'+e.role+'</div>'
+    +     '<span class="pill '+e.ratingClass+'">'+e.rating+'</span>'
+    +   '</div>'
+    +   '<div>'
+    +     '<div class="base">'+money(e.base)+'</div>'
+    +     '<div class="pos">'+rangeBar(e.pos)+'<span>'+e.pos.charAt(0).toUpperCase()+e.pos.slice(1)+'</span></div>'
+    +     (e.note ? '<div class="note">'+e.note+'</div>' : '')
+    +   '</div>'
+    +   stepper(e.id,'merit',e.merit)
+    +   stepper(e.id,'bonus',e.bonus)
+    +   '<div>'
+    +     '<button class="reveal" type="button" data-act="reveal" data-id="'+e.id+'" aria-expanded="false" aria-controls="det-'+e.id+'" disabled>&#128274; Recommendation</button>'
+    +     '<button class="nozero" type="button" data-act="nozero" data-id="'+e.id+'" id="nz-'+e.id+'">No award for '+e.name+'</button>'
+    +     '<span class="chip" id="chip-'+e.id+'" hidden></span>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="detail" id="det-'+e.id+'">'
+    +   '<div class="recline">'
+    +     '<span>Recommended merit <b>'+money(e.merit.rec)+'</b> <span class="delta" id="dm-'+e.id+'"></span></span>'
+    +     '<span>Recommended bonus <b>'+money(e.bonus.rec)+'</b> <span class="delta" id="db-'+e.id+'"></span></span>'
+    +   '</div>'
+    +   '<p>'+e.meritWhy+'</p>'
+    +   '<p>'+e.bonusWhy+'</p>'
+    + '</div>'
+    + '</div>'
+  ).join('');
+  update();
+}
+
+function update(){
+  let mUsed = 0, bUsed = 0;
+  EMPLOYEES.forEach(e => {
+    const s = state[e.id];
+    mUsed += s.merit; bUsed += s.bonus;
+    document.getElementById('amt-'+e.id+'-merit').textContent = money(s.merit);
+    document.getElementById('amt-'+e.id+'-bonus').textContent = money(s.bonus);
+    const dm = document.getElementById('dm-'+e.id);
+    const db = document.getElementById('db-'+e.id);
+    if (dm) dm.textContent = '(you allocated ' + money(s.merit) + ')';
+    if (db) db.textContent = '(you allocated ' + money(s.bonus) + ')';
+  });
+
+  const mLeft = MERIT_BUDGET - mUsed, bLeft = BONUS_BUDGET - bUsed;
+  const mEl = document.getElementById('meritNum'), bEl = document.getElementById('bonusNum');
+  const mFill = document.getElementById('meritFill'), bFill = document.getElementById('bonusFill');
+
+  mEl.textContent = money(mLeft);  mEl.classList.toggle('over', mLeft < 0);
+  bEl.textContent = money(bLeft);  bEl.classList.toggle('over', bLeft < 0);
+  mFill.style.width = Math.min(100, mUsed / MERIT_BUDGET * 100) + '%';
+  bFill.style.width = Math.min(100, bUsed / BONUS_BUDGET * 100) + '%';
+  mFill.classList.toggle('over', mLeft < 0);
+  bFill.classList.toggle('over', bLeft < 0);
+
+  document.getElementById('totals').textContent =
+    'Allocated: ' + money(mUsed) + ' merit · ' + money(bUsed) + ' bonus';
+
+  document.querySelectorAll('button[data-act="dec"]').forEach(btn => {
+    btn.disabled = locked || state[btn.dataset.id][btn.dataset.kind] <= 0;
+  });
+  document.querySelectorAll('button[data-act="inc"]').forEach(btn => { btn.disabled = locked; });
+
+  const done = EMPLOYEES.filter(e => state[e.id].decided).length;
+  const prog = document.getElementById('progress');
+  if (locked) {
+    prog.textContent = 'Locked \u2014 open any recommendation to compare.';
+    prog.classList.remove('ready');
+  } else {
+    prog.textContent = done === EMPLOYEES.length
+      ? 'Decided: ' + done + ' of ' + EMPLOYEES.length + ' \u2014 ready to lock in'
+      : 'Decided: ' + done + ' of ' + EMPLOYEES.length + ' \u2014 allocate for everyone to unlock the recommendations';
+    prog.classList.toggle('ready', done === EMPLOYEES.length);
+  }
+  document.getElementById('lockBtn').disabled = locked || done < EMPLOYEES.length;
+
+  EMPLOYEES.forEach(e => {
+    const nz = document.getElementById('nz-' + e.id);
+    if (nz) nz.hidden = locked || state[e.id].decided;
+    const chip = document.getElementById('chip-' + e.id);
+    if (chip) {
+      if (!locked) { chip.hidden = true; }
+      else {
+        const yours = state[e.id].merit + state[e.id].bonus;
+        const rec   = e.merit.rec + e.bonus.rec;
+        const d = yours - rec;
+        chip.hidden = false;
+        chip.className = 'chip ' + (d === 0 ? 'match' : 'diff');
+        chip.textContent = d === 0 ? 'Matches' : (d > 0 ? '\u25B2 ' + money(d) + ' over' : '\u25BC ' + money(-d) + ' under');
+      }
+    }
+  });
+}
+
+document.addEventListener('click', ev => {
+  const btn = ev.target.closest('button[data-act]');
+  if (!btn) return;
+  const { act, id, kind } = btn.dataset;
+
+  if (act === 'inc' || act === 'dec') {
+    if (locked) return;
+    const next = state[id][kind] + (act === 'inc' ? STEP : -STEP);
+    state[id][kind] = Math.max(0, next);
+    state[id].decided = true;
+    update();
+  }
+  if (act === 'nozero') {
+    if (locked) return;
+    state[id].decided = true;
+    update();
+  }
+  if (act === 'reveal') {
+    if (!locked) return;
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    document.getElementById('det-' + id).classList.toggle('open', !open);
+  }
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  EMPLOYEES.forEach(e => { state[e.id].merit = 0; state[e.id].bonus = 0; state[e.id].decided = false; });
+  locked = false;
+  document.getElementById('banner').classList.remove('on');
+  document.getElementById('allBtn').hidden = true;
+  document.getElementById('allBtn').textContent = 'Show all recommendations';
+  document.getElementById('takeBtn').hidden = true;
+  document.getElementById('backBtn').hidden = true;
+  document.getElementById('debrief').hidden = true;
+  document.querySelector('.intro').hidden = false;
+  document.querySelector('.roster').hidden = false;
+  document.querySelector('.legend').hidden = false;
+  document.getElementById('totals').parentElement.style.visibility = 'visible';
+  document.getElementById('lockBtn').hidden = false;
+  document.querySelectorAll('.detail').forEach(d => d.classList.remove('open'));
+  document.querySelectorAll('button[data-act="reveal"]').forEach(b => {
+    b.setAttribute('aria-expanded','false');
+    b.disabled = true;
+    b.innerHTML = '\u{1F512} Recommendation';
+  });
+  update();
+});
+
+document.getElementById('lockBtn').addEventListener('click', () => {
+  locked = true;
+
+  let yM = 0, yB = 0, rM = 0, rB = 0;
+  EMPLOYEES.forEach(e => {
+    yM += state[e.id].merit; yB += state[e.id].bonus;
+    rM += e.merit.rec;       rB += e.bonus.rec;
+  });
+  const matches = EMPLOYEES.filter(e =>
+    state[e.id].merit === e.merit.rec && state[e.id].bonus === e.bonus.rec).length;
+
+  document.getElementById('bYou').textContent = money(yM) + ' merit / ' + money(yB) + ' bonus';
+  document.getElementById('bRec').textContent = money(rM) + ' merit / ' + money(rB) + ' bonus';
+  document.getElementById('bMsg').textContent =
+    matches + ' of ' + EMPLOYEES.length + ' match the recommendation exactly \u2014 open each person to see why.';
+  document.getElementById('banner').classList.add('on');
+
+  document.querySelectorAll('button[data-act="reveal"]').forEach(b => {
+    b.disabled = false;
+    b.textContent = 'Recommendation';
+  });
+  document.getElementById('lockBtn').hidden = true;
+  document.getElementById('allBtn').hidden = false;
+  document.getElementById('takeBtn').hidden = false;
+  update();
+});
+
+document.getElementById('allBtn').addEventListener('click', function(){
+  if (!locked) return;
+  const anyClosed = [...document.querySelectorAll('.detail')].some(d => !d.classList.contains('open'));
+  document.querySelectorAll('.detail').forEach(d => d.classList.toggle('open', anyClosed));
+  document.querySelectorAll('button[data-act="reveal"]').forEach(b => b.setAttribute('aria-expanded', String(anyClosed)));
+  this.textContent = anyClosed ? 'Hide all recommendations' : 'Show all recommendations';
+});
+
+function buildDebrief(){
+  const byId = id => EMPLOYEES.find(e => e.id === id);
+  const lo = byId(PEER_PAIR.lowId), co = byId(PEER_PAIR.compId);
+
+  document.getElementById('proof').innerHTML = [lo, co].map(e =>
+    '<div class="card">'
+    + '<div class="who">' + e.name + '</div>'
+    + '<div class="meta">' + e.role + ' &middot; rated ' + e.rating + '</div>'
+    + '<div class="kv"><span>Pay position</span> ' + rangeBar(e.pos)
+    +   ' <b>' + e.pos.charAt(0).toUpperCase() + e.pos.slice(1) + '</b></div>'
+    + '<div class="kv"><span>Recommended bonus</span><b>' + money(e.bonus.rec) + '</b></div>'
+    + '<div class="kv hi"><span>Recommended merit</span><b>' + money(e.merit.rec) + '</b></div>'
+    + '</div>'
+  ).join('');
+
+  const yl = state[lo.id].merit, yc = state[co.id].merit;
+  let msg;
+  if (yl > yc) {
+    msg = 'You gave <b>' + lo.name + '</b> ' + money(yl) + ' in merit and <b>' + co.name + '</b> '
+        + money(yc) + '. Same rating, different pay position &mdash; and you let the pay position decide. '
+        + 'That is exactly the habit this activity is built to train.';
+  } else if (yl === yc) {
+    msg = 'You gave both Senior Analysts the same merit (' + money(yl) + '). They earned it equally, '
+        + 'so that feels fair &mdash; but only one of them <i>needed</i> it equally. '
+        + 'Equal awards on unequal starting points keep the gap exactly where it was.';
+  } else {
+    msg = 'You gave <b>' + co.name + '</b> more merit than <b>' + lo.name + '</b> (' + money(yc)
+        + ' vs ' + money(yl) + '). They performed the same, but ' + co.name
+        + ' was already paid competitively &mdash; so this widens the gap between them. Worth a second look.';
+  }
+  document.getElementById('yours').innerHTML = msg;
+}
+
+function showDebrief(on){
+  buildDebrief();
+  document.getElementById('debrief').hidden = !on;
+  document.querySelector('.intro').hidden = on;
+  document.querySelector('.roster').hidden = on;
+  document.querySelector('.legend').hidden = on;
+  document.getElementById('banner').classList.toggle('on', locked && !on);
+  document.getElementById('takeBtn').hidden = on || !locked;
+  document.getElementById('backBtn').hidden = !on;
+  document.getElementById('allBtn').hidden = on || !locked;
+  document.getElementById('resetBtn').hidden = on;
+  document.getElementById('totals').parentElement.style.visibility = on ? 'hidden' : 'visible';
+}
+
+document.getElementById('takeBtn').addEventListener('click', () => showDebrief(true));
+document.getElementById('backBtn').addEventListener('click', () => showDebrief(false));
+
+render();
+</script>
+</body>
+</html>
