@@ -1,3 +1,6 @@
+
+
+Index · HTML
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,9 +14,9 @@
    Embed in Genially at 1160 x 640 (or anything down to ~900 wide).
    Everything scales to the iframe; nothing is ever clipped.
    ============================================================ */
-
+ 
 *, *::before, *::after { box-sizing: border-box; }
-
+ 
 html {
   /* The whole UI scales off this. Narrow iframe = smaller everything. */
   font-size: clamp(11px, 1.12vw, 15px);
@@ -26,7 +29,7 @@ body {
   background: #fff;
   -webkit-font-smoothing: antialiased;
 }
-
+ 
 :root{
   --green:#2E6B45;
   --green-deep:#28603E;
@@ -41,14 +44,14 @@ body {
   --slate-soft:#ECF1F4;
   --danger:#B03A2E;
 }
-
+ 
 .app{ height:100%; display:flex; flex-direction:column; padding:1.3rem 1.6rem 1.1rem; gap:.85rem; }
-
+ 
 /* ---------- top bar: title + budget meters ---------- */
 .topbar{ display:flex; align-items:flex-end; justify-content:space-between; gap:1.5rem; flex:0 0 auto; }
 h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:800; letter-spacing:-.01em; }
 .intro{ font-size:.95rem; color:var(--muted); margin:.35rem 0 0; max-width:34rem; line-height:1.45; }
-
+ 
 .meters{ display:flex; gap:.8rem; flex:0 0 auto; }
 .meter{ background:var(--tile); border:1px solid var(--line); border-radius:.6rem; padding:.55rem .85rem .65rem; min-width:11.5rem; }
 .meter .lab{ font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--green); font-weight:700; }
@@ -58,7 +61,7 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
 .meter .fill{ height:100%; background:var(--green); border-radius:99px; transition:width .18s ease; }
 .meter .fill.over{ background:var(--danger); }
 .meter .sub{ font-size:.68rem; color:var(--muted); margin-top:.3rem; }
-
+ 
 /* ---------- legend ---------- */
 .legend{
   flex:0 0 auto; display:flex; align-items:center; gap:1.4rem; flex-wrap:wrap;
@@ -67,17 +70,17 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
 .legend .ttl{ font-weight:700; color:var(--green); letter-spacing:.03em; }
 .legend .item{ display:flex; align-items:center; gap:.4rem; color:#43504B; }
 .legend[hidden], .roster[hidden]{ display:none; }
-
+ 
 /* three-segment pay-position bar */
 .rb{ display:inline-flex; gap:2px; vertical-align:middle; }
 .rb i{ display:block; width:.85rem; height:.5rem; background:#D3DCD6; border-radius:1px; }
 .rb i.on{ background:var(--green); }
-
+ 
 /* ---------- roster (the only scrollable region) ---------- */
 .roster{ flex:1 1 auto; min-height:0; overflow-y:auto; border:1px solid var(--line); border-radius:.6rem; }
 .roster::-webkit-scrollbar{ width:9px; }
 .roster::-webkit-scrollbar-thumb{ background:#CBD5CE; border-radius:99px; }
-
+ 
 .colhead{
   display:grid; grid-template-columns:13rem 11rem 1fr 1fr 8.5rem;
   gap:1rem; padding:.5rem 1rem; font-size:.7rem; letter-spacing:.09em;
@@ -97,11 +100,11 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
 .p-exc{ background:var(--green-soft); color:var(--green); }
 .p-suc{ background:var(--slate-soft); color:var(--slate); }
 .p-imp{ background:var(--amber-soft); color:var(--amber); }
-
+ 
 .base{ font-size:1.05rem; font-weight:700; font-variant-numeric:tabular-nums; }
 .pos{ display:flex; align-items:center; gap:.4rem; margin-top:.25rem; font-size:.76rem; color:var(--muted); }
 .note{ font-size:.72rem; color:var(--muted); font-style:italic; margin-top:.25rem; line-height:1.3; }
-
+ 
 .stepper{ display:flex; align-items:center; gap:.4rem; }
 .stepper button{
   width:1.85rem; height:1.85rem; border-radius:.35rem; border:1px solid #C8D3CC;
@@ -113,7 +116,7 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
 .stepper button:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
 .amt{ font-size:1.1rem; font-weight:800; min-width:4.4rem; text-align:center; font-variant-numeric:tabular-nums; }
 .guide{ font-size:.7rem; color:var(--muted); margin-top:.25rem; }
-
+ 
 .reveal{
   border:1px solid var(--green); background:#fff; color:var(--green-deep);
   font-size:.76rem; font-weight:700; padding:.45rem .7rem; border-radius:.35rem;
@@ -123,7 +126,7 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
 .reveal:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
 .reveal[aria-expanded="true"]{ background:var(--green); color:#fff; }
 .reveal:disabled{ border-color:#D6DED9; color:#9AA4A7; background:#F7F9F8; cursor:not-allowed; }
-
+ 
 .nozero{
   display:block; width:100%; margin-top:.3rem; background:none; border:0;
   font-family:inherit; font-size:.68rem; color:var(--muted); cursor:pointer;
@@ -137,7 +140,7 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
 .chip.match{ background:var(--green-soft); color:var(--green); }
 .chip.diff{ background:var(--amber-soft); color:var(--amber); }
 .nozero[hidden], .chip[hidden]{ display:none; }
-
+ 
 .banner{
   flex:0 0 auto; display:none; align-items:center; gap:.9rem; flex-wrap:wrap;
   background:var(--green); color:#fff; border-radius:.5rem; padding:.5rem .85rem; font-size:.8rem;
@@ -145,9 +148,9 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
 .banner.on{ display:flex; }
 .banner b{ font-variant-numeric:tabular-nums; }
 .banner .sep{ opacity:.45; }
-
+ 
 .progress{ font-size:.82rem; color:var(--muted); font-variant-numeric:tabular-nums; }
-
+ 
 /* ---------- debrief view ---------- */
 .debrief{ flex:1 1 auto; min-height:0; overflow-y:auto; padding:.4rem .2rem; }
 .debrief[hidden]{ display:none; }
@@ -180,7 +183,7 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
   border-radius:.5rem; padding:.6rem .9rem; max-width:44rem;
 }
 .progress.ready{ color:var(--green); font-weight:700; }
-
+ 
 .detail{ display:none; padding:0 1rem 1rem; background:#FAFCFB; }
 .detail.open{ display:block; }
 .detail .recline{
@@ -192,7 +195,7 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
 .detail .delta{ font-size:.75rem; color:var(--muted); }
 .detail p{ margin:0 0 .5rem; font-size:.85rem; line-height:1.55; max-width:62rem; }
 .detail p strong{ color:var(--green); }
-
+ 
 /* ---------- footer ---------- */
 .footer{ flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
 .footer .tot{ font-size:.82rem; color:var(--muted); font-variant-numeric:tabular-nums; }
@@ -205,9 +208,9 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
 .btn.primary{ background:var(--green); border-color:var(--green); color:#fff; }
 .btn.primary:hover{ background:var(--green-deep); }
 .btn:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
-
+ 
 .sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
-
+ 
 /* narrow iframes: let the two money columns stack under the person */
 @media (max-width: 900px){
   .colhead{ display:none; }
@@ -217,7 +220,7 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
 </head>
 <body>
 <div class="app">
-
+ 
   <header class="topbar">
     <div>
       <h1>Allocate your budget</h1>
@@ -238,14 +241,14 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
       </div>
     </div>
   </header>
-
+ 
   <div class="legend">
     <span class="ttl">Pay relative to range</span>
     <span class="item"><span class="rb"><i class="on"></i><i></i><i></i></span> Low &mdash; below midpoint</span>
     <span class="item"><span class="rb"><i></i><i class="on"></i><i></i></span> Competitive &mdash; at midpoint</span>
     <span class="item"><span class="rb"><i></i><i></i><i class="on"></i></span> High &mdash; above midpoint</span>
   </div>
-
+ 
   <div class="banner" id="banner">
     <span>&#10003; Allocations locked.</span>
     <span class="sep">|</span>
@@ -255,26 +258,26 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
     <span class="sep">|</span>
     <span id="bMsg"></span>
   </div>
-
+ 
   <div class="roster">
     <div class="colhead">
       <div>Employee</div><div>Base pay</div><div>Merit</div><div>Bonus</div><div></div>
     </div>
     <div id="rows"></div>
   </div>
-
+ 
   <section class="debrief" id="debrief" hidden>
     <h2>The two-variable habit</h2>
     <p>Most managers allocate on performance alone. That quietly widens pay gaps within the same role, year after year, without anyone deciding it should happen.</p>
     <p>A strong performer already high in range needs less than an equally strong performer sitting low in range.</p>
     <p class="kicker">Rating tells you what someone earned. Pay position tells you where the money should go.</p>
-
+ 
     <div class="proof" id="proof"></div>
     <div class="yours" id="yours"></div>
-
+ 
     <div class="finish">&#10003; <span>You&rsquo;ve completed the activity &mdash; use <b>Next</b> to continue.</span></div>
   </section>
-
+ 
   <footer class="footer">
     <div>
       <div class="tot" id="totals">Allocated: $0 merit &middot; $0 bonus</div>
@@ -289,22 +292,21 @@ h1{ font-size:2rem; line-height:1.1; margin:0; color:var(--green); font-weight:8
     </div>
   </footer>
 </div>
-
+ 
 <script>
 /* ============================================================
-   EDIT HERE — everything below the array is generic.
-   TODO: base pay for Emilio / Ananya / Jace / Miles are PLACEHOLDERS.
-   TODO: confirm which Senior Analyst is paid low — swap the two
-         `pos` / merit / bonus blocks if Jace is the low-paid one.
+   EDIT HERE — everything below the EMPLOYEES array is generic.
+   Base pay, ratings, guideline ranges and rationales all live in
+   the array below. Change them here and the whole page follows.
    ============================================================ */
 const MERIT_BUDGET = 13500;
 const BONUS_BUDGET = 32000;
 const STEP = 500;
-
+ 
 /* The matched pair the debrief argues from: same role, same rating, different pay
    position. If you swap which Senior Analyst is paid low, swap these two ids too. */
 const PEER_PAIR = { lowId:'ananya', compId:'jace' };
-
+ 
 const EMPLOYEES = [
   {
     id:'ines', name:'Ines', role:'Business Analyst',
@@ -319,17 +321,17 @@ const EMPLOYEES = [
   {
     id:'emilio', name:'Emilio', role:'Business Analyst',
     rating:'Needs Improvement', ratingClass:'p-imp',
-    base:78000, pos:'high',
+    base:80000, pos:'high',
     note:'New to the role this year',
     merit:{ min:0, max:1000, rec:0 },
     bonus:{ min:0, max:2500, rec:2500 },
-    meritWhy:'Emilio is paid high in range — close to Senior Analyst territory — while performing below expectation. No merit increase this cycle: adding to base pay would deepen a gap that is already working against him.',
+    meritWhy:'Emilio is paid high in range — the same base salary as one of your Senior Analysts — while performing below expectation. No merit increase this cycle: adding to base pay would deepen a gap that is already working against him.',
     bonusWhy:'He is new to the role, and the rating reflects a learning curve more than a performance problem. The top of a reduced bonus guideline supports him through ramp-up <strong>without touching base pay</strong>, which is where the real issue sits.'
   },
   {
     id:'ananya', name:'Ananya', role:'Senior Business Analyst',
     rating:'Successful', ratingClass:'p-suc',
-    base:88000, pos:'low',
+    base:80000, pos:'low',
     note:'',
     merit:{ min:1000, max:3000, rec:4000 },
     bonus:{ min:3500, max:5500, rec:5500 },
@@ -339,7 +341,7 @@ const EMPLOYEES = [
   {
     id:'jace', name:'Jace', role:'Senior Business Analyst',
     rating:'Successful', ratingClass:'p-suc',
-    base:96000, pos:'competitive',
+    base:85000, pos:'competitive',
     note:'',
     merit:{ min:1500, max:3000, rec:2000 },
     bonus:{ min:4000, max:5500, rec:5500 },
@@ -349,7 +351,7 @@ const EMPLOYEES = [
   {
     id:'miles', name:'Miles', role:'Business Manager',
     rating:'Needs Improvement', ratingClass:'p-imp',
-    base:115000, pos:'competitive',
+    base:130000, pos:'competitive',
     note:'',
     merit:{ min:0, max:2000, rec:1000 },
     bonus:{ min:0, max:6500, rec:6500 },
@@ -357,22 +359,22 @@ const EMPLOYEES = [
     bonusWhy:'His guideline already tops out at <strong>half of his target bonus</strong> because of the rating — the reduction itself carries the performance message. Awarding the top of that reduced range keeps him engaged through a turnaround year.'
   }
 ];
-
+ 
 /* ---------- generic from here ---------- */
 const state = {};
 EMPLOYEES.forEach(e => state[e.id] = { merit:0, bonus:0, decided:false });
 let locked = false;
-
+ 
 const money = n => '$' + n.toLocaleString('en-US');
 const POS_INDEX = { low:0, competitive:1, high:2 };
-
+ 
 function rangeBar(pos){
   const i = POS_INDEX[pos];
   return '<span class="rb" role="img" aria-label="Pay position: ' + pos + '">'
     + [0,1,2].map(n => '<i class="' + (n===i ? 'on' : '') + '"></i>').join('')
     + '</span>';
 }
-
+ 
 function stepper(id, kind, g){
   return '<div>'
     + '<div class="stepper">'
@@ -383,7 +385,7 @@ function stepper(id, kind, g){
     + '<div class="guide">Guideline ' + money(g.min) + '–' + money(g.max) + '</div>'
     + '</div>';
 }
-
+ 
 function render(){
   document.getElementById('rows').innerHTML = EMPLOYEES.map(e =>
     '<div class="row">'
@@ -418,7 +420,7 @@ function render(){
   ).join('');
   update();
 }
-
+ 
 function update(){
   let mUsed = 0, bUsed = 0;
   EMPLOYEES.forEach(e => {
@@ -431,26 +433,26 @@ function update(){
     if (dm) dm.textContent = '(you allocated ' + money(s.merit) + ')';
     if (db) db.textContent = '(you allocated ' + money(s.bonus) + ')';
   });
-
+ 
   const mLeft = MERIT_BUDGET - mUsed, bLeft = BONUS_BUDGET - bUsed;
   const mEl = document.getElementById('meritNum'), bEl = document.getElementById('bonusNum');
   const mFill = document.getElementById('meritFill'), bFill = document.getElementById('bonusFill');
-
+ 
   mEl.textContent = money(mLeft);  mEl.classList.toggle('over', mLeft < 0);
   bEl.textContent = money(bLeft);  bEl.classList.toggle('over', bLeft < 0);
   mFill.style.width = Math.min(100, mUsed / MERIT_BUDGET * 100) + '%';
   bFill.style.width = Math.min(100, bUsed / BONUS_BUDGET * 100) + '%';
   mFill.classList.toggle('over', mLeft < 0);
   bFill.classList.toggle('over', bLeft < 0);
-
+ 
   document.getElementById('totals').textContent =
     'Allocated: ' + money(mUsed) + ' merit · ' + money(bUsed) + ' bonus';
-
+ 
   document.querySelectorAll('button[data-act="dec"]').forEach(btn => {
     btn.disabled = locked || state[btn.dataset.id][btn.dataset.kind] <= 0;
   });
   document.querySelectorAll('button[data-act="inc"]').forEach(btn => { btn.disabled = locked; });
-
+ 
   const done = EMPLOYEES.filter(e => state[e.id].decided).length;
   const prog = document.getElementById('progress');
   if (locked) {
@@ -463,7 +465,7 @@ function update(){
     prog.classList.toggle('ready', done === EMPLOYEES.length);
   }
   document.getElementById('lockBtn').disabled = locked || done < EMPLOYEES.length;
-
+ 
   EMPLOYEES.forEach(e => {
     const nz = document.getElementById('nz-' + e.id);
     if (nz) nz.hidden = locked || state[e.id].decided;
@@ -481,12 +483,12 @@ function update(){
     }
   });
 }
-
+ 
 document.addEventListener('click', ev => {
   const btn = ev.target.closest('button[data-act]');
   if (!btn) return;
   const { act, id, kind } = btn.dataset;
-
+ 
   if (act === 'inc' || act === 'dec') {
     if (locked) return;
     const next = state[id][kind] + (act === 'inc' ? STEP : -STEP);
@@ -506,7 +508,7 @@ document.addEventListener('click', ev => {
     document.getElementById('det-' + id).classList.toggle('open', !open);
   }
 });
-
+ 
 document.getElementById('resetBtn').addEventListener('click', () => {
   EMPLOYEES.forEach(e => { state[e.id].merit = 0; state[e.id].bonus = 0; state[e.id].decided = false; });
   locked = false;
@@ -529,10 +531,10 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   });
   update();
 });
-
+ 
 document.getElementById('lockBtn').addEventListener('click', () => {
   locked = true;
-
+ 
   let yM = 0, yB = 0, rM = 0, rB = 0;
   EMPLOYEES.forEach(e => {
     yM += state[e.id].merit; yB += state[e.id].bonus;
@@ -540,13 +542,13 @@ document.getElementById('lockBtn').addEventListener('click', () => {
   });
   const matches = EMPLOYEES.filter(e =>
     state[e.id].merit === e.merit.rec && state[e.id].bonus === e.bonus.rec).length;
-
+ 
   document.getElementById('bYou').textContent = money(yM) + ' merit / ' + money(yB) + ' bonus';
   document.getElementById('bRec').textContent = money(rM) + ' merit / ' + money(rB) + ' bonus';
   document.getElementById('bMsg').textContent =
     matches + ' of ' + EMPLOYEES.length + ' match the recommendation exactly \u2014 open each person to see why.';
   document.getElementById('banner').classList.add('on');
-
+ 
   document.querySelectorAll('button[data-act="reveal"]').forEach(b => {
     b.disabled = false;
     b.textContent = 'Recommendation';
@@ -556,7 +558,7 @@ document.getElementById('lockBtn').addEventListener('click', () => {
   document.getElementById('takeBtn').hidden = false;
   update();
 });
-
+ 
 document.getElementById('allBtn').addEventListener('click', function(){
   if (!locked) return;
   const anyClosed = [...document.querySelectorAll('.detail')].some(d => !d.classList.contains('open'));
@@ -564,11 +566,11 @@ document.getElementById('allBtn').addEventListener('click', function(){
   document.querySelectorAll('button[data-act="reveal"]').forEach(b => b.setAttribute('aria-expanded', String(anyClosed)));
   this.textContent = anyClosed ? 'Hide all recommendations' : 'Show all recommendations';
 });
-
+ 
 function buildDebrief(){
   const byId = id => EMPLOYEES.find(e => e.id === id);
   const lo = byId(PEER_PAIR.lowId), co = byId(PEER_PAIR.compId);
-
+ 
   document.getElementById('proof').innerHTML = [lo, co].map(e =>
     '<div class="card">'
     + '<div class="who">' + e.name + '</div>'
@@ -579,7 +581,7 @@ function buildDebrief(){
     + '<div class="kv hi"><span>Recommended merit</span><b>' + money(e.merit.rec) + '</b></div>'
     + '</div>'
   ).join('');
-
+ 
   const yl = state[lo.id].merit, yc = state[co.id].merit;
   let msg;
   if (yl > yc) {
@@ -597,7 +599,7 @@ function buildDebrief(){
   }
   document.getElementById('yours').innerHTML = msg;
 }
-
+ 
 function showDebrief(on){
   buildDebrief();
   document.getElementById('debrief').hidden = !on;
@@ -611,11 +613,14 @@ function showDebrief(on){
   document.getElementById('resetBtn').hidden = on;
   document.getElementById('totals').parentElement.style.visibility = on ? 'hidden' : 'visible';
 }
-
+ 
 document.getElementById('takeBtn').addEventListener('click', () => showDebrief(true));
 document.getElementById('backBtn').addEventListener('click', () => showDebrief(false));
-
+ 
 render();
 </script>
 </body>
 </html>
+ 
+
+
