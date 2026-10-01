@@ -8,7 +8,8 @@
 /* ============================================================
    COMPENSATION PLANNING ACTIVITY
    Self-contained. No dependencies. Drop into GitHub Pages.
-   Sized to fit a Genially embed as small as 1090 x 540.
+   Embed in Genially at 1160 x 640 (or anything down to ~900 wide).
+   Everything scales to the iframe; nothing is ever clipped.
    ============================================================ */
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -151,7 +152,16 @@ h1{ font-size:1.7rem; line-height:1.1; margin:0; color:var(--green); font-weight
 .banner b{ font-variant-numeric:tabular-nums; }
 .banner .sep{ opacity:.45; }
 
-.progress{ font-size:.82rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+.progress{ font-size:.82rem; color:var(--muted-strong); display:flex; align-items:center; gap:.45rem; flex-wrap:wrap; }
+.progress .step{
+  font-weight:800; color:#fff; background:var(--green); border-radius:99px;
+  padding:.12rem .55rem; white-space:nowrap; letter-spacing:.01em;
+}
+.progress .do b{ color:var(--green-deep); font-weight:700; white-space:nowrap; }
+.progress .count{
+  color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap;
+  border-left:1px solid var(--line); padding-left:.5rem;
+}
 
 /* ---------- debrief view ---------- */
 .debrief{ flex:1 1 auto; min-height:0; overflow-y:auto; padding:.4rem .2rem; }
@@ -281,7 +291,7 @@ body.takeaway h1, body.takeaway .meters{ display:none; }
   <footer class="footer">
     <div class="status">
       <span class="tot" id="totals">Allocated: $0 merit &middot; $0 bonus</span>
-      <span class="progress" id="progress">Decided: 0 of 5 &mdash; allocate for everyone to unlock the recommendations</span>
+      <span class="progress" id="progress" aria-live="polite"></span>
     </div>
     <div class="acts">
       <button class="btn" id="resetBtn" type="button">Start over</button>
@@ -364,6 +374,7 @@ const EMPLOYEES = [
 const state = {};
 EMPLOYEES.forEach(e => state[e.id] = { merit:0, bonus:0, decided:false });
 let locked = false;
+let anyRevealed = false;   /* has the learner opened at least one recommendation? */
 
 const money = n => '$' + n.toLocaleString('en-US');
 const POS_INDEX = { low:0, competitive:1, high:2 };
@@ -402,7 +413,7 @@ function render(){
     +   stepper(e.id,'merit',e.merit)
     +   stepper(e.id,'bonus',e.bonus)
     +   '<div>'
-    +     '<button class="reveal" type="button" data-act="reveal" data-id="'+e.id+'" aria-expanded="false" aria-controls="det-'+e.id+'" disabled>&#128274; Recommendation</button>'
+    +     '<button class="reveal" type="button" data-act="reveal" data-id="'+e.id+'" aria-expanded="false" aria-controls="det-'+e.id+'" title="Locked \u2014 allocate for all five, then click Lock in &amp; compare" disabled>&#128274; Recommendation</button>'
     +     '<button class="nozero" type="button" data-act="nozero" data-id="'+e.id+'" id="nz-'+e.id+'">No award for '+e.name+'</button>'
     +     '<span class="chip" id="chip-'+e.id+'" hidden></span>'
     +   '</div>'
@@ -418,6 +429,30 @@ function render(){
     + '</div>'
   ).join('');
   update();
+}
+
+/* The footer line is the instruction. It only ever shows the one step that
+   is live right now, so the learner is never reading three steps they can't
+   act on. Four states: allocating -> ready to lock -> comparing -> finishing. */
+function stepLine(done){
+  const pill = t => '<span class="step">' + t + '</span>';
+  const doIt = t => '<span class="do">' + t + '</span>';
+
+  if (!locked) {
+    if (done < EMPLOYEES.length) {
+      return pill('Step 1 of 3')
+        + doIt('Use &minus; and + to allocate for all five')
+        + '<span class="count">Decided: ' + done + ' of ' + EMPLOYEES.length + '</span>';
+    }
+    return pill('Step 1 complete')
+      + doIt('All five decided &mdash; click <b>Lock in &amp; compare</b> &rarr;');
+  }
+  if (!anyRevealed) {
+    return pill('Step 2 of 3')
+      + doIt('Open each <b>Recommendation</b> &mdash; or <b>Show all</b>');
+  }
+  return pill('Step 3 of 3')
+    + doIt('Finished comparing? Click <b>See the takeaway</b> &rarr;');
 }
 
 function update(){
@@ -442,8 +477,9 @@ function update(){
   if (mFill) { mFill.style.width = Math.min(100, mUsed / MERIT_BUDGET * 100) + '%'; mFill.classList.toggle('over', mLeft < 0); }
   if (bFill) { bFill.style.width = Math.min(100, bUsed / BONUS_BUDGET * 100) + '%'; bFill.classList.toggle('over', bLeft < 0); }
 
-  document.getElementById('totals').textContent =
-    'Allocated: ' + money(mUsed) + ' merit · ' + money(bUsed) + ' bonus';
+  const tot = document.getElementById('totals');
+  tot.textContent = 'Allocated: ' + money(mUsed) + ' merit · ' + money(bUsed) + ' bonus';
+  tot.hidden = locked;   /* the banner already shows these once locked */
 
   document.querySelectorAll('button[data-act="dec"]').forEach(btn => {
     btn.disabled = locked || state[btn.dataset.id][btn.dataset.kind] <= 0;
@@ -451,16 +487,7 @@ function update(){
   document.querySelectorAll('button[data-act="inc"]').forEach(btn => { btn.disabled = locked; });
 
   const done = EMPLOYEES.filter(e => state[e.id].decided).length;
-  const prog = document.getElementById('progress');
-  if (locked) {
-    prog.textContent = 'Locked \u2014 open any recommendation to compare.';
-    prog.classList.remove('ready');
-  } else {
-    prog.textContent = done === EMPLOYEES.length
-      ? 'Decided: ' + done + ' of ' + EMPLOYEES.length + ' \u2014 ready to lock in'
-      : 'Decided: ' + done + ' of ' + EMPLOYEES.length + ' \u2014 allocate for everyone to unlock the recommendations';
-    prog.classList.toggle('ready', done === EMPLOYEES.length);
-  }
+  document.getElementById('progress').innerHTML = stepLine(done);
   document.getElementById('lockBtn').disabled = locked || done < EMPLOYEES.length;
 
   EMPLOYEES.forEach(e => {
@@ -503,12 +530,14 @@ document.addEventListener('click', ev => {
     const open = btn.getAttribute('aria-expanded') === 'true';
     btn.setAttribute('aria-expanded', String(!open));
     document.getElementById('det-' + id).classList.toggle('open', !open);
+    if (!open) { anyRevealed = true; update(); }
   }
 });
 
 document.getElementById('resetBtn').addEventListener('click', () => {
   EMPLOYEES.forEach(e => { state[e.id].merit = 0; state[e.id].bonus = 0; state[e.id].decided = false; });
   locked = false;
+  anyRevealed = false;
   document.getElementById('banner').classList.remove('on');
   document.getElementById('allBtn').hidden = true;
   document.getElementById('allBtn').textContent = 'Show all recommendations';
@@ -526,6 +555,7 @@ document.getElementById('resetBtn').addEventListener('click', () => {
     b.setAttribute('aria-expanded','false');
     b.disabled = true;
     b.innerHTML = '\u{1F512} Recommendation';
+    b.title = 'Locked \u2014 allocate for all five, then click Lock in & compare';
   });
   update();
 });
@@ -550,6 +580,7 @@ document.getElementById('lockBtn').addEventListener('click', () => {
   document.querySelectorAll('button[data-act="reveal"]').forEach(b => {
     b.disabled = false;
     b.textContent = 'Recommendation';
+    b.removeAttribute('title');
   });
   document.getElementById('lockBtn').hidden = true;
   document.getElementById('allBtn').hidden = false;
@@ -563,6 +594,7 @@ document.getElementById('allBtn').addEventListener('click', function(){
   document.querySelectorAll('.detail').forEach(d => d.classList.toggle('open', anyClosed));
   document.querySelectorAll('button[data-act="reveal"]').forEach(b => b.setAttribute('aria-expanded', String(anyClosed)));
   this.textContent = anyClosed ? 'Hide all recommendations' : 'Show all recommendations';
+  if (anyClosed) { anyRevealed = true; update(); }
 });
 
 function buildDebrief(){
