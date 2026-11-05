@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <title>Compensation Planning Activity</title>
 <style>
 /* ============================================================
@@ -21,7 +24,7 @@ html {
 }
 body {
   margin: 0; height: 100%; overflow: hidden;   /* never scrolls as a page */
-  font-family: "Segoe UI", Inter, system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", "Segoe UI", Inter, system-ui, -apple-system, Helvetica, Arial, sans-serif;
   color: #2F373B;
   background: #fff;
   -webkit-font-smoothing: antialiased;
@@ -151,6 +154,10 @@ h1{ font-size:1.7rem; line-height:1.1; margin:0; color:var(--green); font-weight
 .banner.on{ display:flex; }
 .banner b{ font-variant-numeric:tabular-nums; }
 .banner .sep{ opacity:.45; }
+/* match message always sits on its own line, so no stray divider at a line end */
+.banner{ row-gap:.25rem; }
+.banner .sep:nth-last-child(2){ display:none; }
+#bMsg{ flex-basis:100%; }
 
 .progress{ font-size:.82rem; color:var(--muted-strong); display:flex; align-items:center; gap:.45rem; flex-wrap:wrap; }
 .progress .step{
